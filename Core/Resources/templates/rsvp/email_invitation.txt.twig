@@ -1,0 +1,21 @@
+{{ sender }} has invited you to an event.
+
+{{ summary }}
+
+When: {% if all_day %}{{ start_date }}{% else %}{{ start_date }} at {{ start_time }}{% if end_time %} - {{ end_time }}{% endif %}{% endif %}
+{% if location %}Where: {{ location }}{% endif %}
+{% if description %}
+
+{{ description }}
+{% endif %}
+
+To respond to this invitation, click one of the links below:
+
+Yes (Accept): {{ rsvp_yes_url }}
+No (Decline): {{ rsvp_no_url }}
+Maybe (Tentative): {{ rsvp_maybe_url }}
+
+Or view full details: {{ rsvp_url }}
+
+---
+This invitation was sent via Baïkal CalDAV Server

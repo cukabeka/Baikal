@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ summary }}</title>
+    <style>
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background-color: #4285f4;
+            color: #ffffff;
+            padding: 24px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 400;
+        }
+        .content {
+            padding: 32px 24px;
+        }
+        .organizer {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 16px;
+        }
+        .event-title {
+            font-size: 28px;
+            font-weight: 400;
+            color: #202124;
+            margin: 0 0 24px 0;
+        }
+        .event-details {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4285f4;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        .detail-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            color: #5f6368;
+            flex-shrink: 0;
+        }
+        .detail-content {
+            flex: 1;
+            color: #202124;
+            font-size: 14px;
+            line-height: 20px;
+        }
+        .description {
+            font-size: 14px;
+            color: #202124;
+            line-height: 20px;
+            margin-bottom: 24px;
+            white-space: pre-wrap;
+        }
+        .rsvp-section {
+            text-align: center;
+            padding: 24px 0;
+        }
+        .rsvp-question {
+            font-size: 16px;
+            color: #202124;
+            margin-bottom: 20px;
+        }
+        .rsvp-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rsvp-button {
+            display: inline-block;
+            padding: 12px 32px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid #dadce0;
+        }
+        .rsvp-yes {
+            background-color: #1a73e8;
+            color: #ffffff;
+            border-color: #1a73e8;
+        }
+        .rsvp-yes:hover {
+            background-color: #1557b0;
+            border-color: #1557b0;
+        }
+        .rsvp-no {
+            background-color: #ffffff;
+            color: #1a73e8;
+        }
+        .rsvp-no:hover {
+            background-color: #f8f9fa;
+        }
+        .rsvp-maybe {
+            background-color: #ffffff;
+            color: #1a73e8;
+        }
+        .rsvp-maybe:hover {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #5f6368;
+            border-top: 1px solid #e8eaed;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            .rsvp-buttons {
+                flex-direction: column;
+            }
+            .rsvp-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Calendar Invitation</h1>
+        </div>
+        
+        <div class="content">
+            <div class="organizer">
+                {{ sender }} has invited you
+            </div>
+            
+            <h2 class="event-title">{{ summary }}</h2>
+            
+            <div class="event-details">
+                <div class="detail-row">
+                    <div class="detail-icon">🕒</div>
+                    <div class="detail-content">
+                        <strong>When:</strong><br>
+                        {% if all_day %}
+                            {{ start_date }}
+                        {% else %}
+                            {{ start_date }}<br>
+                            {{ start_time }}{% if end_time %} – {{ end_time }}{% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if location %}
+                <div class="detail-row">
+                    <div class="detail-icon">📍</div>
+                    <div class="detail-content">
+                        <strong>Where:</strong><br>
+                        {{ location }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if description %}
+            <div class="description">
+                {{ description }}
+            </div>
+            {% endif %}
+            
+            <div class="rsvp-section">
+                <div class="rsvp-question">
+                    <strong>Will you attend?</strong>
+                </div>
+                <div class="rsvp-buttons">
+                    <a href="{{ rsvp_yes_url }}" class="rsvp-button rsvp-yes">
+                        ✓ Yes
+                    </a>
+                    <a href="{{ rsvp_no_url }}" class="rsvp-button rsvp-no">
+                        ✗ No
+                    </a>
+                    <a href="{{ rsvp_maybe_url }}" class="rsvp-button rsvp-maybe">
+                        ? Maybe
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            This invitation was sent via Baïkal CalDAV Server<br>
+            <a href="{{ rsvp_url }}" style="color: #1a73e8; text-decoration: none;">View full invitation details</a>
+        </div>
+    </div>
+</body>
+</html>
