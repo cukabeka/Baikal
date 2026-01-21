@@ -1,0 +1,21 @@
+{{ sender }} hat dich zu einem Termin eingeladen.
+
+{{ summary }}
+
+Wann: {% if all_day %}{{ start_date }}{% else %}{{ start_date }} um {{ start_time }}{% if end_time %} - {{ end_time }}{% endif %}{% endif %}
+{% if location %}Wo: {{ location }}{% endif %}
+{% if description %}
+
+{{ description }}
+{% endif %}
+
+Um auf diese Einladung zu antworten, klicke auf einen der folgenden Links:
+
+Ja (Zusagen): {{ rsvp_yes_url }}
+Nein (Absagen): {{ rsvp_no_url }}
+Vielleicht (Vorläufig): {{ rsvp_maybe_url }}
+
+Oder vollständige Details ansehen: {{ rsvp_url }}
+
+---
+Diese Einladung wurde über den Baïkal CalDAV Server gesendet
