@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ summary }} - RSVP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .event-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4285f4;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        .event-title {
+            font-size: 24px;
+            color: #202124;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .event-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .event-detail:last-child {
+            margin-bottom: 0;
+        }
+        .detail-icon {
+            font-size: 20px;
+            width: 32px;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #5f6368;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            color: #202124;
+        }
+        .description-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e8eaed;
+        }
+        .description-label {
+            font-weight: 500;
+            color: #5f6368;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .description-text {
+            color: #202124;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .rsvp-section {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 32px;
+            text-align: center;
+            border: 2px solid #e8eaed;
+        }
+        .rsvp-question {
+            font-size: 20px;
+            color: #202124;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+        .rsvp-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .rsvp-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 40px;
+            text-decoration: none;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            border: 2px solid;
+            min-width: 140px;
+            cursor: pointer;
+        }
+        .rsvp-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .rsvp-button:active {
+            transform: translateY(0);
+        }
+        .rsvp-yes {
+            background-color: #1a73e8;
+            color: #ffffff;
+            border-color: #1a73e8;
+        }
+        .rsvp-yes:hover {
+            background-color: #1557b0;
+            border-color: #1557b0;
+        }
+        .rsvp-no {
+            background-color: #ea4335;
+            color: #ffffff;
+            border-color: #ea4335;
+        }
+        .rsvp-no:hover {
+            background-color: #d33426;
+            border-color: #d33426;
+        }
+        .rsvp-maybe {
+            background-color: #fbbc04;
+            color: #202124;
+            border-color: #fbbc04;
+        }
+        .rsvp-maybe:hover {
+            background-color: #f9ab00;
+            border-color: #f9ab00;
+        }
+        .rsvp-note {
+            font-size: 13px;
+            color: #5f6368;
+            line-height: 1.5;
+        }
+        .success-message {
+            background-color: #e6f4ea;
+            border-left: 4px solid #34a853;
+            color: #137333;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        .success-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .error-message {
+            background-color: #fce8e6;
+            border-left: 4px solid #ea4335;
+            color: #c5221f;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 24px 30px;
+            text-align: center;
+            font-size: 13px;
+            color: #5f6368;
+            border-top: 1px solid #e8eaed;
+        }
+        .footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 0;
+            }
+            .container {
+                border-radius: 0;
+            }
+            .header {
+                padding: 32px 20px;
+            }
+            .content {
+                padding: 24px 20px;
+            }
+            .event-card {
+                padding: 20px;
+            }
+            .rsvp-section {
+                padding: 24px 16px;
+            }
+            .rsvp-buttons {
+                flex-direction: column;
+            }
+            .rsvp-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">📅</div>
+            <h1>Calendar Invitation</h1>
+            <p>You've been invited to an event</p>
+        </div>
+        
+        <div class="content">
+            {% if success_message %}
+            <div class="success-message">
+                <div class="success-icon">✓</div>
+                <strong>{{ success_message }}</strong>
+            </div>
+            {% endif %}
+            
+            {% if error_message %}
+            <div class="error-message">
+                <strong>{{ error_message }}</strong>
+            </div>
+            {% endif %}
+            
+            <div class="event-card">
+                <div class="event-title">{{ summary }}</div>
+                
+                <div class="event-detail">
+                    <div class="detail-icon">🕒</div>
+                    <div>
+                        <div class="detail-label">When</div>
+                        <div class="detail-value">
+                            {% if all_day %}
+                                {{ start_date }}
+                            {% else %}
+                                {{ start_date }}<br>
+                                {{ start_time }}{% if end_time %} – {{ end_time }}{% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                {% if location %}
+                <div class="event-detail">
+                    <div class="detail-icon">📍</div>
+                    <div>
+                        <div class="detail-label">Where</div>
+                        <div class="detail-value">{{ location }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if organizer_name or organizer_email %}
+                <div class="event-detail">
+                    <div class="detail-icon">👤</div>
+                    <div>
+                        <div class="detail-label">Organizer</div>
+                        <div class="detail-value">
+                            {% if organizer_name %}
+                                {{ organizer_name }}
+                            {% else %}
+                                {{ organizer_email }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if description %}
+                <div class="description-section">
+                    <div class="description-label">Description</div>
+                    <div class="description-text">{{ description }}</div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if not responded %}
+            <div class="rsvp-section">
+                <div class="rsvp-question">Will you attend?</div>
+                <div class="rsvp-buttons">
+                    <a href="?token={{ token }}&response=ACCEPTED" class="rsvp-button rsvp-yes">
+                        ✓ Yes
+                    </a>
+                    <a href="?token={{ token }}&response=DECLINED" class="rsvp-button rsvp-no">
+                        ✗ No
+                    </a>
+                    <a href="?token={{ token }}&response=TENTATIVE" class="rsvp-button rsvp-maybe">
+                        ? Maybe
+                    </a>
+                </div>
+                <div class="rsvp-note">
+                    Your response will be sent to the event organizer.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            This invitation was sent via <strong>Baïkal CalDAV Server</strong><br>
+            <a href="https://sabre.io/baikal/">Learn more about Baïkal</a>
+        </div>
+    </div>
+</body>
+</html>

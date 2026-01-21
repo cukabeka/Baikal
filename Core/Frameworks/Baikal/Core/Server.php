@@ -173,7 +173,16 @@ class Server {
             $this->server->addPlugin(new \Sabre\DAV\Sharing\Plugin());
             $this->server->addPlugin(new \Sabre\CalDAV\SharingPlugin());
             if (isset($config['system']["invite_from"]) && $config['system']["invite_from"] !== "") {
-                $this->server->addPlugin(new \Sabre\CalDAV\Schedule\IMipPlugin($config['system']["invite_from"]));
+                // Use RSVP-enabled IMipPlugin if RSVP is enabled, otherwise use standard IMipPlugin
+                if (isset($config['system']["rsvp_enabled"]) && $config['system']["rsvp_enabled"]) {
+                    $this->server->addPlugin(new \Baikal\Core\Schedule\RSVPIMipPlugin(
+                        $config['system']["invite_from"],
+                        $this->pdo,
+                        $this->baseUri
+                    ));
+                } else {
+                    $this->server->addPlugin(new \Sabre\CalDAV\Schedule\IMipPlugin($config['system']["invite_from"]));
+                }
             }
         }
         if ($this->enableCardDAV) {
