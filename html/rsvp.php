@@ -243,12 +243,21 @@ function processRSVPResponse($pdo, $tokenData, $eventData, $response, $config)
         $stmt->execute([$updatedCalendarData, time(), $calendarObject['id']]);
         
         // Record the response
-        $stmt = $pdo->prepare(
-            'INSERT INTO rsvp_responses (token, response, responded_at) VALUES (?, ?, ?)
-             ON DUPLICATE KEY UPDATE response = ?, responded_at = ?'
-        );
         $now = time();
-        $stmt->execute([$tokenData['token'], $response, $now, $response, $now]);
+        
+        // Try to insert, if it exists, update it (works across all databases)
+        try {
+            $stmt = $pdo->prepare(
+                'INSERT INTO rsvp_responses (token, response, responded_at) VALUES (?, ?, ?)'
+            );
+            $stmt->execute([$tokenData['token'], $response, $now]);
+        } catch (\PDOException $e) {
+            // Token already exists, update it
+            $stmt = $pdo->prepare(
+                'UPDATE rsvp_responses SET response = ?, responded_at = ? WHERE token = ?'
+            );
+            $stmt->execute([$response, $now, $tokenData['token']]);
+        }
         
         // Send notification to organizer if configured
         sendOrganizerNotification($eventData, $recipientEmail, $response, $config);
@@ -304,5 +313,9 @@ function sendOrganizerNotification($eventData, $recipientEmail, $response, $conf
         'Reply-To: ' . $recipientEmail,
     ];
     
-    mail($eventData['organizer_email'], $subject, $message, implode("\r\n", $headers));
+    $result = mail($eventData['organizer_email'], $subject, $message, implode("\r\n", $headers));
+    
+    if (!$result) {
+        error_log('Failed to send RSVP notification email to ' . $eventData['organizer_email']);
+    }
 }

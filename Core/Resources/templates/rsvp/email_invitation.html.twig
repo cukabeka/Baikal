@@ -144,13 +144,13 @@
         }
     </style>
 </head>
-<body>
+<body role="document">
     <div class="container">
-        <div class="header">
-            <h1>📅 Calendar Invitation</h1>
+        <div class="header" role="banner">
+            <h1><span role="img" aria-label="Calendar">📅</span> Calendar Invitation</h1>
         </div>
         
-        <div class="content">
+        <div class="content" role="main">
             <div class="organizer">
                 {{ sender }} has invited you
             </div>
@@ -159,7 +159,7 @@
             
             <div class="event-details">
                 <div class="detail-row">
-                    <div class="detail-icon">🕒</div>
+                    <div class="detail-icon" role="img" aria-label="Time">🕒</div>
                     <div class="detail-content">
                         <strong>When:</strong><br>
                         {% if all_day %}
@@ -173,7 +173,7 @@
                 
                 {% if location %}
                 <div class="detail-row">
-                    <div class="detail-icon">📍</div>
+                    <div class="detail-icon" role="img" aria-label="Location">📍</div>
                     <div class="detail-content">
                         <strong>Where:</strong><br>
                         {{ location }}

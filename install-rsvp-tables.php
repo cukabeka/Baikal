@@ -65,7 +65,7 @@ $sql = file_get_contents($sqlFile);
 
 try {
     // Check if tables already exist
-    $stmt = $pdo->query("SELECT COUNT(*) FROM rsvp_tokens LIMIT 1");
+    $stmt = $pdo->query("SELECT 1 FROM rsvp_tokens LIMIT 1");
     echo "\nWarning: RSVP tables already exist. Skipping installation.\n";
     echo "If you want to reinstall, please drop the tables manually first.\n";
     exit(0);

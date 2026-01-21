@@ -47,6 +47,11 @@ use Twig\Environment;
 class RSVPIMipPlugin extends IMipPlugin
 {
     /**
+     * Default token expiration time in seconds (90 days).
+     */
+    const TOKEN_EXPIRATION_SECONDS = 90 * 24 * 60 * 60;
+
+    /**
      * PDO database connection.
      *
      * @var \PDO
@@ -233,27 +238,37 @@ class RSVPIMipPlugin extends IMipPlugin
         $vevent = $iTipMessage->message->VEVENT;
         $uid = isset($vevent->UID) ? (string)$vevent->UID : uniqid('event-');
         
-        // Generate token
-        $token = bin2hex(random_bytes(32));
-        
-        // Store token in database
-        $stmt = $this->pdo->prepare(
-            'INSERT INTO rsvp_tokens (token, event_uid, recipient_email, created_at, expires_at) 
-             VALUES (?, ?, ?, ?, ?)'
-        );
-        
-        $createdAt = time();
-        $expiresAt = $createdAt + (90 * 24 * 60 * 60); // 90 days expiration
-        
-        $stmt->execute([
-            $token,
-            $uid,
-            $recipient,
-            $createdAt,
-            $expiresAt
-        ]);
-        
-        return $token;
+        // Generate token with retry on collision (extremely rare)
+        $maxRetries = 3;
+        for ($attempt = 0; $attempt < $maxRetries; $attempt++) {
+            try {
+                $token = bin2hex(random_bytes(32));
+                
+                // Store token in database
+                $stmt = $this->pdo->prepare(
+                    'INSERT INTO rsvp_tokens (token, event_uid, recipient_email, created_at, expires_at) 
+                     VALUES (?, ?, ?, ?, ?)'
+                );
+                
+                $createdAt = time();
+                $expiresAt = $createdAt + self::TOKEN_EXPIRATION_SECONDS;
+                
+                $stmt->execute([
+                    $token,
+                    $uid,
+                    $recipient,
+                    $createdAt,
+                    $expiresAt
+                ]);
+                
+                return $token;
+            } catch (\PDOException $e) {
+                // Token collision - try again
+                if ($attempt === $maxRetries - 1) {
+                    throw new \RuntimeException('Failed to generate unique RSVP token after ' . $maxRetries . ' attempts');
+                }
+            }
+        }
     }
 
     /**
